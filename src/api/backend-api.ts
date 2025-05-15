@@ -12,21 +12,28 @@ export const extractTextFromFile = async (file: File): Promise<string> => {
   formData.append("file", file);
   
   try {
+    console.log("Sending file to backend:", file.name, file.type, file.size);
+    
     // Call the Flask backend API
     const response = await fetch('http://localhost:5000/api/extract-text', {
       method: 'POST',
       body: formData,
     });
     
+    console.log("Backend response status:", response.status);
+    
     if (!response.ok) {
-      throw new Error('API request failed');
+      const errorText = await response.text();
+      console.error("API error response:", errorText);
+      throw new Error(`API request failed with status ${response.status}: ${errorText}`);
     }
     
     const data = await response.json();
-    return data.extractedText;
+    console.log("Text extraction successful, received data:", data);
+    return data.extractedText || "";
   } catch (error) {
     console.error("Error extracting text:", error);
-    throw new Error("Failed to extract text from file");
+    throw new Error(`Failed to extract text from file: ${error.message}`);
   }
 };
 
@@ -44,6 +51,8 @@ export const convertTextToFormat = async (
   filename: string
 ): Promise<Blob> => {
   try {
+    console.log(`Converting text to ${format} format for file ${filename}`);
+    
     // Call the Flask backend API for conversion
     const response = await fetch('http://localhost:5000/api/convert', {
       method: 'POST',
@@ -57,13 +66,17 @@ export const convertTextToFormat = async (
       }),
     });
     
+    console.log("Conversion response status:", response.status);
+    
     if (!response.ok) {
-      throw new Error('API request failed');
+      const errorText = await response.text();
+      console.error("API error response:", errorText);
+      throw new Error(`API request failed with status ${response.status}: ${errorText}`);
     }
     
     return await response.blob();
   } catch (error) {
     console.error("Error converting text:", error);
-    throw new Error(`Failed to convert text to ${format}`);
+    throw new Error(`Failed to convert text to ${format}: ${error.message}`);
   }
 };
