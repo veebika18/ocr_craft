@@ -1,6 +1,9 @@
 
 // This file contains integration points for the Flask backend API
 
+// API base URL - centralized for easy configuration
+const API_BASE_URL = 'http://localhost:5000/api';
+
 /**
  * Sends a file to the backend for text extraction
  * 
@@ -15,7 +18,7 @@ export const extractTextFromFile = async (file: File): Promise<string> => {
     console.log("Sending file to backend:", file.name, file.type, file.size);
     
     // Call the Flask backend API
-    const response = await fetch('http://localhost:5000/api/extract-text', {
+    const response = await fetch(`${API_BASE_URL}/extract-text`, {
       method: 'POST',
       body: formData,
     });
@@ -54,7 +57,7 @@ export const convertTextToFormat = async (
     console.log(`Converting text to ${format} format for file ${filename}`);
     
     // Call the Flask backend API for conversion
-    const response = await fetch('http://localhost:5000/api/convert', {
+    const response = await fetch(`${API_BASE_URL}/convert`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

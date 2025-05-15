@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, Copy, CheckCheck } from "lucide-react";
+import { Download, Copy, CheckCheck, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { convertTextToFormat } from "@/api/backend-api";
 
@@ -14,6 +14,7 @@ interface ExtractedContentProps {
 const ExtractedContent = ({ text, filename }: ExtractedContentProps) => {
   const [isCopied, setIsCopied] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [currentFormat, setCurrentFormat] = useState<string | null>(null);
 
   const copyToClipboard = async () => {
     try {
@@ -30,6 +31,7 @@ const ExtractedContent = ({ text, filename }: ExtractedContentProps) => {
   const downloadAs = async (format: string) => {
     try {
       setIsDownloading(true);
+      setCurrentFormat(format);
       
       // Call the backend to convert and get the file
       const blob = await convertTextToFormat(text, format, filename);
@@ -50,61 +52,45 @@ const ExtractedContent = ({ text, filename }: ExtractedContentProps) => {
       toast.error(`Failed to download as ${format}`);
     } finally {
       setIsDownloading(false);
+      setCurrentFormat(null);
     }
   };
 
   return (
-    <Card className="p-6 w-full mt-6">
+    <Card className="p-6 w-full mt-6 border-2 border-primary/10 bg-gradient-to-br from-primary/5 to-background backdrop-blur-sm">
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center">
-          <h3 className="text-lg font-medium">Extracted Text</h3>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={copyToClipboard}>
-              {isCopied ? <CheckCheck className="h-4 w-4 mr-1" /> : <Copy className="h-4 w-4 mr-1" />}
-              {isCopied ? 'Copied' : 'Copy'}
-            </Button>
-          </div>
+          <h3 className="text-xl font-medium text-primary">Extracted Text</h3>
+          <Button variant="outline" size="sm" onClick={copyToClipboard} className="hover:bg-primary/10">
+            {isCopied ? <CheckCheck className="h-4 w-4 mr-1" /> : <Copy className="h-4 w-4 mr-1" />}
+            {isCopied ? 'Copied' : 'Copy'}
+          </Button>
         </div>
         
-        <div className="bg-muted p-4 rounded-md max-h-64 overflow-y-auto whitespace-pre-wrap">
+        <div className="bg-white/80 p-4 rounded-md max-h-64 overflow-y-auto whitespace-pre-wrap border border-muted shadow-inner">
           {text || "No text extracted yet."}
         </div>
         
         <div className="mt-2">
-          <h4 className="text-sm font-medium mb-2">Download as:</h4>
+          <h4 className="text-sm font-medium mb-2 text-primary/80">Download as:</h4>
           <div className="flex flex-wrap gap-2">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => downloadAs('txt')}
-              disabled={isDownloading}
-            >
-              <Download className="h-4 w-4 mr-1" /> TXT
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => downloadAs('pdf')}
-              disabled={isDownloading}
-            >
-              <Download className="h-4 w-4 mr-1" /> PDF
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => downloadAs('doc')}
-              disabled={isDownloading}
-            >
-              <Download className="h-4 w-4 mr-1" /> DOC
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => downloadAs('image')}
-              disabled={isDownloading}
-            >
-              <Download className="h-4 w-4 mr-1" /> Image
-            </Button>
+            {['txt', 'pdf', 'doc', 'image'].map(format => (
+              <Button 
+                key={format}
+                variant="outline" 
+                size="sm" 
+                onClick={() => downloadAs(format)}
+                disabled={isDownloading}
+                className="bg-white/70 hover:bg-primary/10"
+              >
+                {isDownloading && currentFormat === format ? (
+                  <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                ) : (
+                  <Download className="h-4 w-4 mr-1" />
+                )}
+                {format.toUpperCase()}
+              </Button>
+            ))}
           </div>
         </div>
       </div>

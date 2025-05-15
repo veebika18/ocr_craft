@@ -2,8 +2,6 @@
 import { useState } from "react";
 import FileUpload from "@/components/FileUpload";
 import ExtractedContent from "@/components/ExtractedContent";
-import AlgorithmInfo from "@/components/AlgorithmInfo";
-import { Separator } from "@/components/ui/separator";
 
 const Index = () => {
   const [extractedText, setExtractedText] = useState("");
@@ -15,75 +13,69 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="bg-primary text-primary-foreground py-6">
-        <div className="container max-w-6xl mx-auto px-4">
-          <h1 className="text-3xl font-bold">Advanced Text Extraction</h1>
+    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
+      <header className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-8">
+        <div className="container max-w-4xl mx-auto px-4">
+          <h1 className="text-4xl font-bold">Text Extractor</h1>
           <p className="mt-2 text-primary-foreground/90">
-            Extract text from multiple document types with high accuracy
+            Extract text from any document type in seconds
           </p>
         </div>
       </header>
 
-      <main className="container max-w-6xl mx-auto py-8 px-4">
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="md:col-span-2">
-            <h2 className="text-2xl font-semibold mb-4">Upload Document</h2>
+      <main className="container max-w-4xl mx-auto py-10 px-4">
+        <div className="space-y-8">
+          <section>
+            <h2 className="text-2xl font-semibold mb-4 text-primary">Upload Your Document</h2>
             <FileUpload onFileProcessed={handleFileProcessed} />
-            
-            {extractedText && (
+          </section>
+          
+          {extractedText && (
+            <section>
               <ExtractedContent 
                 text={extractedText} 
                 filename={processedFilename} 
               />
-            )}
-          </div>
-          
-          <div className="md:col-span-1">
-            <h2 className="text-2xl font-semibold mb-4">How It Works</h2>
-            <div className="bg-card border rounded-lg p-6">
-              <h3 className="font-medium text-lg">Supported File Formats</h3>
-              <ul className="mt-2 space-y-1 text-sm">
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-blue-500 inline-block"></span>
-                  PDF Documents
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
-                  Word Documents (.doc, .docx)
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-yellow-500 inline-block"></span>
-                  Images (.jpg, .png, .jpeg)
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-red-500 inline-block"></span>
-                  Text Files (.txt)
-                </li>
-              </ul>
-              
-              <Separator className="my-4" />
-              
-              <h3 className="font-medium text-lg">Processing Steps</h3>
-              <ol className="mt-2 space-y-2 list-decimal list-inside text-sm">
-                <li>Upload your document</li>
-                <li>Automatic format detection</li>
-                <li>Pre-processing optimization</li>
-                <li>Multi-algorithm text extraction</li>
-                <li>Intelligent post-processing</li>
-                <li>Download in your preferred format</li>
-              </ol>
+            </section>
+          )}
+
+          <section className="mt-12">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white/50 p-6 rounded-lg shadow-sm border border-primary/10 backdrop-blur-sm">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-4">
+                  <span className="text-xl font-bold">1</span>
+                </div>
+                <h3 className="text-lg font-medium mb-2">Upload Any Format</h3>
+                <p className="text-sm text-muted-foreground">
+                  Support for PDF, Word, Images and Text files
+                </p>
+              </div>
+              <div className="bg-white/50 p-6 rounded-lg shadow-sm border border-primary/10 backdrop-blur-sm">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-4">
+                  <span className="text-xl font-bold">2</span>
+                </div>
+                <h3 className="text-lg font-medium mb-2">Smart Extraction</h3>
+                <p className="text-sm text-muted-foreground">
+                  Multi-algorithm processing for optimal accuracy
+                </p>
+              </div>
+              <div className="bg-white/50 p-6 rounded-lg shadow-sm border border-primary/10 backdrop-blur-sm">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-4">
+                  <span className="text-xl font-bold">3</span>
+                </div>
+                <h3 className="text-lg font-medium mb-2">Instant Download</h3>
+                <p className="text-sm text-muted-foreground">
+                  Export extracted text in multiple formats
+                </p>
+              </div>
             </div>
-            
-            <AlgorithmInfo />
-          </div>
+          </section>
         </div>
       </main>
       
-      <footer className="border-t mt-12 py-6">
-        <div className="container max-w-6xl mx-auto px-4 text-center text-sm text-muted-foreground">
+      <footer className="border-t mt-12 py-6 bg-white/30 backdrop-blur-sm">
+        <div className="container max-w-4xl mx-auto px-4 text-center text-sm text-muted-foreground">
           <p>Advanced Text Extraction Tool &copy; 2025</p>
-          <p className="mt-1">Using Transformer-based OCR and CNN processing</p>
         </div>
       </footer>
     </div>
