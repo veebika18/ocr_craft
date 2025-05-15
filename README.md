@@ -1,73 +1,55 @@
-# Welcome to your Lovable project
 
-## Project info
+# Advanced Text Extraction Application
 
-**URL**: https://lovable.dev/projects/5d8254d6-d732-4eaa-a6fd-dac794b1a689
+## Frontend Features
+- Document upload interface for PDF, Word, Image and Text files
+- Text extraction visualization and editing
+- Multiple download formats (PDF, DOC, TXT, Image)
+- Information about extraction algorithms and technologies
 
-## How can I edit this code?
+## Backend Integration Points
+The frontend is designed to integrate with a Flask API that would include:
 
-There are several ways of editing your application.
+### Text Extraction Algorithms
+- Transformer-based OCR (using models like EasyOCR, Tesseract v5)
+- CNN-based document analysis
+- Pre-processing techniques:
+  - Adaptive thresholding
+  - Deskewing and rotation correction
+  - Noise reduction
+  - Image enhancement
+- Post-processing techniques:
+  - Spell checking
+  - Context-aware error correction
+  - Format preservation
+  - NLP improvements
 
-**Use Lovable**
+## How to Use
+1. Upload a document (PDF, Word, Image, or Text file)
+2. The system processes the document using multiple algorithms
+3. View the extracted text
+4. Download the text in your preferred format
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/5d8254d6-d732-4eaa-a6fd-dac794b1a689) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+## Getting Started
+```
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Required Backend Implementation
+To fully implement this application, you'll need to create a Flask API with:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. File upload endpoint
+2. Text extraction using multiple algorithms
+3. Format conversion for downloads
+4. Error handling and validation
 
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/5d8254d6-d732-4eaa-a6fd-dac794b1a689) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Example Python packages needed for the backend:
+- Flask
+- PyTesseract
+- EasyOCR
+- PyPDF2
+- python-docx
+- Pillow
+- NumPy
+- OpenCV
