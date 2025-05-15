@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, Copy, CheckCheck } from "lucide-react";
 import { toast } from "sonner";
+import { convertTextToFormat } from "@/api/backend-api";
 
 interface ExtractedContentProps {
   text: string;
@@ -12,6 +13,7 @@ interface ExtractedContentProps {
 
 const ExtractedContent = ({ text, filename }: ExtractedContentProps) => {
   const [isCopied, setIsCopied] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const copyToClipboard = async () => {
     try {
@@ -25,57 +27,29 @@ const ExtractedContent = ({ text, filename }: ExtractedContentProps) => {
     }
   };
 
-  const downloadAs = (format: string) => {
-    // In a real implementation, this would call the backend API to convert
-    // For now, we simulate text download
-    const fileExtension = format.toLowerCase();
-    const mimeTypes: Record<string, string> = {
-      'txt': 'text/plain',
-      'pdf': 'application/pdf',
-      'doc': 'application/msword',
-      'image': 'image/png',
-    };
-    
-    if (format === 'txt') {
-      // For TXT we can create it directly in the browser
-      const blob = new Blob([text], { type: 'text/plain' });
+  const downloadAs = async (format: string) => {
+    try {
+      setIsDownloading(true);
+      
+      // Call the backend to convert and get the file
+      const blob = await convertTextToFormat(text, format, filename);
+      
+      // Create a download link
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${filename.split('.')[0]}.txt`;
+      a.download = `${filename.split('.')[0]}.${format}`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      toast.success(`Downloaded as ${fileExtension.toUpperCase()}`);
-    } else {
-      // For other formats, in a real implementation we would call the backend
-      toast.info(`In a real implementation, the text would be downloaded as ${fileExtension.toUpperCase()}`);
       
-      /* Actual implementation would be:
-      fetch('http://your-flask-api/download', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text,
-          format,
-          filename,
-        }),
-      })
-        .then(response => response.blob())
-        .then(blob => {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `${filename.split('.')[0]}.${fileExtension}`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        });
-      */
+      toast.success(`Downloaded as ${format.toUpperCase()}`);
+    } catch (error) {
+      console.error(`Failed to download as ${format}:`, error);
+      toast.error(`Failed to download as ${format}`);
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -99,16 +73,36 @@ const ExtractedContent = ({ text, filename }: ExtractedContentProps) => {
         <div className="mt-2">
           <h4 className="text-sm font-medium mb-2">Download as:</h4>
           <div className="flex flex-wrap gap-2">
-            <Button variant="outline" size="sm" onClick={() => downloadAs('txt')}>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => downloadAs('txt')}
+              disabled={isDownloading}
+            >
               <Download className="h-4 w-4 mr-1" /> TXT
             </Button>
-            <Button variant="outline" size="sm" onClick={() => downloadAs('pdf')}>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => downloadAs('pdf')}
+              disabled={isDownloading}
+            >
               <Download className="h-4 w-4 mr-1" /> PDF
             </Button>
-            <Button variant="outline" size="sm" onClick={() => downloadAs('doc')}>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => downloadAs('doc')}
+              disabled={isDownloading}
+            >
               <Download className="h-4 w-4 mr-1" /> DOC
             </Button>
-            <Button variant="outline" size="sm" onClick={() => downloadAs('image')}>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => downloadAs('image')}
+              disabled={isDownloading}
+            >
               <Download className="h-4 w-4 mr-1" /> Image
             </Button>
           </div>

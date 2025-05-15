@@ -4,6 +4,7 @@ import { Upload, FileType, ArrowDownToLine, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
+import { extractTextFromFile } from "@/api/backend-api";
 
 interface FileUploadProps {
   onFileProcessed: (text: string, filename: string) => void;
@@ -28,37 +29,15 @@ const FileUpload = ({ onFileProcessed }: FileUploadProps) => {
 
     setIsUploading(true);
     
-    // Create form data to send the file
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-
     try {
-      // In a real implementation, this would point to your Flask backend
-      // For now, we'll simulate a successful API response
-      setTimeout(() => {
-        // Simulating text extraction result
-        const simulatedText = "This is extracted text from " + selectedFile.name;
-        onFileProcessed(simulatedText, selectedFile.name);
-        toast.success("File processed successfully");
-        setIsUploading(false);
-      }, 2000);
-      
-      /* Actual API implementation would be:
-      const response = await fetch('http://your-flask-api/extract-text', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to process file');
-      }
-
-      const data = await response.json();
-      onFileProcessed(data.extractedText, selectedFile.name);
-      */
+      // Use our backend API to extract text
+      const extractedText = await extractTextFromFile(selectedFile);
+      onFileProcessed(extractedText, selectedFile.name);
+      toast.success("File processed successfully");
     } catch (error) {
       console.error("Error uploading file:", error);
       toast.error("Failed to process file");
+    } finally {
       setIsUploading(false);
     }
   };
